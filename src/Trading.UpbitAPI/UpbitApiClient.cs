@@ -90,6 +90,62 @@ namespace Trading.UpbitAPI
             return await response.Content.ReadAsStringAsync();
         }
 
+        public async Task<string> GetOrdersAsync(string market = null, string state = "wait", int page = 1, int limit = 100)
+        {
+            var url = "https://api.upbit.com/v1/orders";
+            var parameters = new Dictionary<string, string>
+            {
+                { "state", state },
+                { "page", page.ToString() },
+                { "limit", limit.ToString() }
+            };
+
+            if (!string.IsNullOrEmpty(market))
+            {
+                parameters.Add("market", market);
+            }
+
+            var token = GenerateJwtToken(parameters);
+
+            var queryString = string.Join("&", parameters.Select(p => $"{p.Key}={Uri.EscapeDataString(p.Value)}"));
+            var fullUrl = $"{url}?{queryString}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+            request.Headers.Add("Authorization", $"Bearer {token}");
+
+            var response = await _httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+
+            return content;
+        }
+
+        public async Task<string> CancelOrderAsync(string uuid)
+        {
+            var url = "https://api.upbit.com/v1/order";
+            var parameters = new Dictionary<string, string>
+            {
+                { "uuid", uuid }
+            };
+
+            var token = GenerateJwtToken(parameters);
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, url)
+            {
+                Content = new FormUrlEncodedContent(parameters)
+            };
+            request.Headers.Add("Authorization", $"Bearer {token}");
+
+            var response = await _httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+
+            return content;
+        }
+
+
         /// <summary>
         /// 주문 상세 정보를 조회합니다.
         /// </summary>
