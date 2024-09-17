@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading", "src\Trading\Trading.csproj", "{03AAC917-26A1-4F43-813C-E85F986C63CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.UpbitAPI", "src\Trading.UpbitAPI\Trading.UpbitAPI.csproj", "{807DBAED-6183-491B-AE2D-3C883DB3F05D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03AAC917-26A1-4F43-813C-E85F986C63CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03AAC917-26A1-4F43-813C-E85F986C63CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03AAC917-26A1-4F43-813C-E85F986C63CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03AAC917-26A1-4F43-813C-E85F986C63CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2C92D07-44E4-470D-8806-68DFC27A2AE6}
+	EndGlobalSection
+EndGlobal
