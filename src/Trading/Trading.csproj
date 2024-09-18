@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trading.OpenAIAPI\Trading.OpenAiAPI.csproj" />
     <ProjectReference Include="..\Trading.UpbitAPI\Trading.UpbitAPI.csproj" />
+    <ProjectReference Include="..\Trading.Utiliy\Trading.Utiliy.csproj" />
   </ItemGroup>
 
 </Project>

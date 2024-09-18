@@ -34,6 +34,7 @@
             tabPage2 = new TabPage();
             dgvMarketInfo = new DataGridView();
             tabPage3 = new TabPage();
+            dgvOrderHistory = new DataGridView();
             lblStatus = new Label();
             label4 = new Label();
             label3 = new Label();
@@ -46,7 +47,11 @@
             txtVolume = new TextBox();
             txtPrice = new TextBox();
             cmbMarket = new ComboBox();
-            dgvOrderHistory = new DataGridView();
+            tabPage4 = new TabPage();
+            lblOpenAIResponse = new Label();
+            btnOpenAI = new Button();
+            label5 = new Label();
+            txtOpenAIAPIKey = new TextBox();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAccounts).BeginInit();
@@ -54,6 +59,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvMarketInfo).BeginInit();
             tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvOrderHistory).BeginInit();
+            tabPage4.SuspendLayout();
             SuspendLayout();
             // 
             // tabControl1
@@ -61,6 +67,7 @@
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
+            tabControl1.Controls.Add(tabPage4);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -137,6 +144,19 @@
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Order";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // dgvOrderHistory
+            // 
+            dgvOrderHistory.AllowUserToAddRows = false;
+            dgvOrderHistory.AllowUserToDeleteRows = false;
+            dgvOrderHistory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvOrderHistory.Location = new Point(330, 15);
+            dgvOrderHistory.Name = "dgvOrderHistory";
+            dgvOrderHistory.ReadOnly = true;
+            dgvOrderHistory.RowHeadersVisible = false;
+            dgvOrderHistory.Size = new Size(454, 319);
+            dgvOrderHistory.TabIndex = 25;
+            dgvOrderHistory.CellContentClick += dgvOrderHistory_CellContentClick;
             // 
             // lblStatus
             // 
@@ -248,18 +268,55 @@
             cmbMarket.Size = new Size(160, 23);
             cmbMarket.TabIndex = 13;
             // 
-            // dgvOrderHistory
+            // tabPage4
             // 
-            dgvOrderHistory.AllowUserToAddRows = false;
-            dgvOrderHistory.AllowUserToDeleteRows = false;
-            dgvOrderHistory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvOrderHistory.Location = new Point(330, 15);
-            dgvOrderHistory.Name = "dgvOrderHistory";
-            dgvOrderHistory.ReadOnly = true;
-            dgvOrderHistory.RowHeadersVisible = false;
-            dgvOrderHistory.Size = new Size(454, 319);
-            dgvOrderHistory.TabIndex = 25;
-            dgvOrderHistory.CellContentClick += dgvOrderHistory_CellContentClick;
+            tabPage4.Controls.Add(txtOpenAIAPIKey);
+            tabPage4.Controls.Add(label5);
+            tabPage4.Controls.Add(lblOpenAIResponse);
+            tabPage4.Controls.Add(btnOpenAI);
+            tabPage4.Location = new Point(4, 24);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Size = new Size(792, 422);
+            tabPage4.TabIndex = 3;
+            tabPage4.Text = "OpenAI";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // lblOpenAIResponse
+            // 
+            lblOpenAIResponse.AutoSize = true;
+            lblOpenAIResponse.Location = new Point(8, 165);
+            lblOpenAIResponse.Name = "lblOpenAIResponse";
+            lblOpenAIResponse.Size = new Size(39, 15);
+            lblOpenAIResponse.TabIndex = 1;
+            lblOpenAIResponse.Text = "label5";
+            // 
+            // btnOpenAI
+            // 
+            btnOpenAI.Location = new Point(8, 68);
+            btnOpenAI.Name = "btnOpenAI";
+            btnOpenAI.Size = new Size(194, 71);
+            btnOpenAI.TabIndex = 0;
+            btnOpenAI.Text = "button1";
+            btnOpenAI.UseVisualStyleBackColor = true;
+            btnOpenAI.Click += btnOpenAI_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(8, 16);
+            label5.Name = "label5";
+            label5.Size = new Size(26, 15);
+            label5.TabIndex = 2;
+            label5.Text = "Key";
+            // 
+            // txtOpenAIAPIKey
+            // 
+            txtOpenAIAPIKey.Location = new Point(40, 13);
+            txtOpenAIAPIKey.Name = "txtOpenAIAPIKey";
+            txtOpenAIAPIKey.PasswordChar = '*';
+            txtOpenAIAPIKey.Size = new Size(724, 23);
+            txtOpenAIAPIKey.TabIndex = 3;
+            txtOpenAIAPIKey.TextChanged += txtOpenAIAPIKey_TextChanged;
             // 
             // MainForm
             // 
@@ -278,6 +335,8 @@
             tabPage3.ResumeLayout(false);
             tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvOrderHistory).EndInit();
+            tabPage4.ResumeLayout(false);
+            tabPage4.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -302,5 +361,10 @@
         private ComboBox cmbMarket;
         private Label lblStatus;
         private DataGridView dgvOrderHistory;
+        private TabPage tabPage4;
+        private Label lblOpenAIResponse;
+        private Button btnOpenAI;
+        private TextBox txtOpenAIAPIKey;
+        private Label label5;
     }
 }

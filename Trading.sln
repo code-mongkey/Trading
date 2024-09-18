@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading", "src\Trading\Trading.csproj", "{03AAC917-26A1-4F43-813C-E85F986C63CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trading", "src\Trading\Trading.csproj", "{03AAC917-26A1-4F43-813C-E85F986C63CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.UpbitAPI", "src\Trading.UpbitAPI\Trading.UpbitAPI.csproj", "{807DBAED-6183-491B-AE2D-3C883DB3F05D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trading.UpbitAPI", "src\Trading.UpbitAPI\Trading.UpbitAPI.csproj", "{807DBAED-6183-491B-AE2D-3C883DB3F05D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.OpenAiAPI", "src\Trading.OpenAIAPI\Trading.OpenAiAPI.csproj", "{6664DAC8-2534-4D7B-8DD7-17FA30178D07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Utiliy", "src\Trading.Utiliy\Trading.Utiliy.csproj", "{E52E7EE1-1158-4EEB-8D0A-121B2043AD8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{807DBAED-6183-491B-AE2D-3C883DB3F05D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6664DAC8-2534-4D7B-8DD7-17FA30178D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6664DAC8-2534-4D7B-8DD7-17FA30178D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6664DAC8-2534-4D7B-8DD7-17FA30178D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6664DAC8-2534-4D7B-8DD7-17FA30178D07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E52E7EE1-1158-4EEB-8D0A-121B2043AD8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E52E7EE1-1158-4EEB-8D0A-121B2043AD8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E52E7EE1-1158-4EEB-8D0A-121B2043AD8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E52E7EE1-1158-4EEB-8D0A-121B2043AD8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

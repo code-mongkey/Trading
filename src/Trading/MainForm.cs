@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
+using Trading.OpenAiAPI;
 using Trading.UpbitAPI;
+using Trading.Utiliy;
 
 namespace Trading
 {
@@ -9,6 +13,7 @@ namespace Trading
         private readonly string _accessKey;
         private readonly string _secretKey;
         private UpbitApiClient _apiClient;
+        private Security _security;
 
         public MainForm(string accessKey, string secretKey)
         {
@@ -16,6 +21,7 @@ namespace Trading
             _accessKey = accessKey;
             _secretKey = secretKey;
             _apiClient = new UpbitApiClient(_accessKey, _secretKey);
+            _security = new Security();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -24,6 +30,7 @@ namespace Trading
             LoadMarketInfo();
             LoadOrderHistory();
             LoadControls();
+            txtOpenAIAPIKey.Text = _security.LoadKeys().Where(x => x.Key == "OpenAIKey").FirstOrDefault().Value;
         }
 
         private async void LoadControls()
@@ -285,6 +292,39 @@ namespace Trading
             {
                 MessageBox.Show($"주문 취소 중 오류가 발생했습니다.\n{ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private async void btnOpenAI_Click(object sender, EventArgs e)
+        {
+            var keys = _security.LoadKeys();
+            if (keys.TryGetValue("OpenAIKey", out var apiKey))
+            {
+            }
+            else
+            {
+            }
+
+            var client = new OpenAiClient(apiKey);
+
+            // Chat Completion 예제
+            var chatPrompt = "안녕하세요! 오늘 날씨는 어떤가요?";
+            var chatResponse = await client.GetChatCompletionAsync(chatPrompt);
+
+
+            // var chatResponse = await client.GetChatCompletionAsync(chatPrompt, "gpt-4");
+            // Console.WriteLine("ChatGPT 응답:");
+            // Console.WriteLine(chatResponse);
+            // 
+            // // Completion 예제
+            // var prompt = "Once upon a time";
+            // var completionResponse = await client.GetCompletionAsync(prompt);
+            // Console.WriteLine("\nText Completion 응답:");
+            // Console.WriteLine(completionResponse);
+        }
+
+        private void txtOpenAIAPIKey_TextChanged(object sender, EventArgs e)
+        {
+            _security.SaveKey("OpenAIKey", txtOpenAIAPIKey.Text);
         }
     }
 }
