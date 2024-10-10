@@ -48,10 +48,11 @@
             txtPrice = new TextBox();
             cmbMarket = new ComboBox();
             tabPage4 = new TabPage();
+            txtOpenAIAPIKey = new TextBox();
+            label5 = new Label();
             lblOpenAIResponse = new Label();
             btnOpenAI = new Button();
-            label5 = new Label();
-            txtOpenAIAPIKey = new TextBox();
+            btnPlaceOrderByGPT = new Button();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAccounts).BeginInit();
@@ -125,6 +126,7 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(btnPlaceOrderByGPT);
             tabPage3.Controls.Add(dgvOrderHistory);
             tabPage3.Controls.Add(lblStatus);
             tabPage3.Controls.Add(label4);
@@ -281,6 +283,24 @@
             tabPage4.Text = "OpenAI";
             tabPage4.UseVisualStyleBackColor = true;
             // 
+            // txtOpenAIAPIKey
+            // 
+            txtOpenAIAPIKey.Location = new Point(40, 13);
+            txtOpenAIAPIKey.Name = "txtOpenAIAPIKey";
+            txtOpenAIAPIKey.PasswordChar = '*';
+            txtOpenAIAPIKey.Size = new Size(724, 23);
+            txtOpenAIAPIKey.TabIndex = 3;
+            txtOpenAIAPIKey.TextChanged += txtOpenAIAPIKey_TextChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(8, 16);
+            label5.Name = "label5";
+            label5.Size = new Size(26, 15);
+            label5.TabIndex = 2;
+            label5.Text = "Key";
+            // 
             // lblOpenAIResponse
             // 
             lblOpenAIResponse.AutoSize = true;
@@ -300,23 +320,15 @@
             btnOpenAI.UseVisualStyleBackColor = true;
             btnOpenAI.Click += btnOpenAI_Click;
             // 
-            // label5
+            // btnPlaceOrderByGPT
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(8, 16);
-            label5.Name = "label5";
-            label5.Size = new Size(26, 15);
-            label5.TabIndex = 2;
-            label5.Text = "Key";
-            // 
-            // txtOpenAIAPIKey
-            // 
-            txtOpenAIAPIKey.Location = new Point(40, 13);
-            txtOpenAIAPIKey.Name = "txtOpenAIAPIKey";
-            txtOpenAIAPIKey.PasswordChar = '*';
-            txtOpenAIAPIKey.Size = new Size(724, 23);
-            txtOpenAIAPIKey.TabIndex = 3;
-            txtOpenAIAPIKey.TextChanged += txtOpenAIAPIKey_TextChanged;
+            btnPlaceOrderByGPT.Location = new Point(30, 283);
+            btnPlaceOrderByGPT.Name = "btnPlaceOrderByGPT";
+            btnPlaceOrderByGPT.Size = new Size(231, 40);
+            btnPlaceOrderByGPT.TabIndex = 26;
+            btnPlaceOrderByGPT.Text = "Order by GPT";
+            btnPlaceOrderByGPT.UseVisualStyleBackColor = true;
+            btnPlaceOrderByGPT.Click += btnPlaceOrderByGPT_Click;
             // 
             // MainForm
             // 
@@ -366,5 +378,6 @@
         private Button btnOpenAI;
         private TextBox txtOpenAIAPIKey;
         private Label label5;
+        private Button btnPlaceOrderByGPT;
     }
 }

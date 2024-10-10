@@ -8,6 +8,7 @@ using System.Text;
 using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
+using Newtonsoft.Json;
 
 namespace Trading.UpbitAPI
 {
@@ -63,6 +64,25 @@ namespace Trading.UpbitAPI
 
             var response = await _httpClient.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
+        }
+
+
+        public async Task<List<Candle>> GetUpbitCandleData(string market, int count)
+        {
+            string url = $"https://api.upbit.com/v1/candles/days?market={market}&count={count}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                HttpResponseMessage response = await client.GetAsync(url);
+                string content = await response.Content.ReadAsStringAsync();
+
+                // JSON 데이터를 UpbitCandle 객체 리스트로 파싱
+                var candles = JsonConvert.DeserializeObject<List<Candle>>(content);
+
+                return candles;
+            }
         }
 
         /// <summary>

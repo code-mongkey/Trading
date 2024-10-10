@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Skender.Stock.Indicators;
 using System.Data;
-using System.Security.Cryptography;
-using System.Text;
 using Trading.OpenAiAPI;
 using Trading.UpbitAPI;
 using Trading.Utiliy;
@@ -309,7 +309,7 @@ namespace Trading
             // Chat Completion 예제
             var chatPrompt = "안녕하세요! 오늘 날씨는 어떤가요?";
             var chatResponse = await client.GetChatCompletionAsync(chatPrompt);
-
+            lblOpenAIResponse.Text = chatResponse;
 
             // var chatResponse = await client.GetChatCompletionAsync(chatPrompt, "gpt-4");
             // Console.WriteLine("ChatGPT 응답:");
@@ -325,6 +325,257 @@ namespace Trading
         private void txtOpenAIAPIKey_TextChanged(object sender, EventArgs e)
         {
             _security.SaveKey("OpenAIKey", txtOpenAIAPIKey.Text);
+        }
+
+        private async void btnPlaceOrderByGPT_Click(object sender, EventArgs e)
+        {
+            // Upbit API에서 데이터 가져오기
+            string market = "KRW-BTC";
+            int count = 200; // 가져올 캔들 수
+
+            var priceData = await _apiClient.GetUpbitCandleData(market, count);
+
+            // 가져온 데이터를 클래스 인스턴스로 변환
+            var analysisInput = MapToAnalysisInput(priceData);
+            
+            // ChatGPT에게 질문하기 (OpenAI API 사용)
+            string response = await AskChatGPT(analysisInput);
+            
+            // 결과 출력
+            Console.WriteLine("ChatGPT의 분석 결과:");
+            Console.WriteLine(response);
+            lblOpenAIResponse.Text = response;
+        }
+
+
+
+        // UpbitCandle 데이터를 AnalysisInput 클래스에 매핑하는 메서드
+        public static AnalysisInput MapToAnalysisInput(List<Candle> candles)
+        {
+            // 시간 역순으로 받아오기 때문에 역순으로 정렬
+            candles.Reverse();
+        
+            var priceData = new PriceData
+            {
+                TimeFrame = "1D",
+                StartDate = candles[0].CandleDateTimeKst.ToString("yyyy-MM-dd"),
+                EndDate = candles[candles.Count - 1].CandleDateTimeKst.ToString("yyyy-MM-dd"),
+                Open = new List<decimal>(),
+                High = new List<decimal>(),
+                Low = new List<decimal>(),
+                Close = new List<decimal>()
+            };
+        
+            var volumeData = new VolumeData
+            {
+                Volume = new List<decimal>()
+            };
+        
+            foreach (var candle in candles)
+            {
+                priceData.Open.Add(candle.OpeningPrice);
+                priceData.High.Add(candle.HighPrice);
+                priceData.Low.Add(candle.LowPrice);
+                priceData.Close.Add(candle.TradePrice);
+        
+                volumeData.Volume.Add(candle.CandleAccTradeVolume);
+            }
+        
+            var analysisInput = new AnalysisInput
+            {
+                PriceData = priceData,
+                VolumeData = volumeData,
+                // 필요한 경우 Indicators 및 기타 데이터도 설정
+                Indicators = new Indicators
+                {
+                    MovingAverages = new MovingAverages
+                    {
+                        Periods = new List<int> { 5, 20, 50, 200 },
+                        ClosePrices = priceData.Close
+                    },
+                    RSI = new RSI
+                    {
+                        Period = 14,
+                        ClosePrices = priceData.Close
+                    },
+                    MACD = new MACD
+                    {
+                        FastEMA = 12,
+                        SlowEMA = 26,
+                        SignalLine = 9,
+                        ClosePrices = priceData.Close
+                    },
+                    BollingerBands = new BollingerBands
+                    {
+                        Period = 20,
+                        StandardDeviation = 2,
+                        ClosePrices = priceData.Close
+                    },
+                    FibonacciRetracement = new FibonacciRetracement
+                    {
+                        HighPrice = priceData.High[priceData.High.Count - 1],
+                        LowPrice = priceData.Low[0]
+                    },
+                    Oscillators = new Oscillators
+                    {
+                        Stochastic = new Stochastic
+                        {
+                            KPeriod = 14,
+                            DPeriod = 3,
+                            ClosePrices = priceData.Close,
+                            HighPrices = priceData.High,
+                            LowPrices = priceData.Low
+                        },
+                        CCI = new CCI
+                        {
+                            Period = 20,
+                            TypicalPrices = CalculateTypicalPrices(priceData.High, priceData.Low, priceData.Close)
+                        }
+                    }
+                },
+                ChartPatterns = new ChartPatterns
+                {
+                    OHLCData = new OHLCData
+                    {
+                        Open = priceData.Open,
+                        High = priceData.High,
+                        Low = priceData.Low,
+                        Close = priceData.Close
+                    }
+                },
+                VolumeAnalysis = new VolumeAnalysis
+                {
+                    Volume = volumeData.Volume
+                },
+                AdditionalData = new AdditionalData
+                {
+                    // 필요에 따라 추가 데이터 설정
+                }
+            };
+        
+            return analysisInput;
+        }
+
+        // Typical Price 계산 메서드
+        public static List<decimal> CalculateTypicalPrices(List<decimal> highPrices, List<decimal> lowPrices, List<decimal> closePrices)
+        {
+            var typicalPrices = new List<decimal>();
+        
+            for (int i = 0; i < highPrices.Count; i++)
+            {
+                decimal typicalPrice = (highPrices[i] + lowPrices[i] + closePrices[i]) / 3;
+                typicalPrices.Add(typicalPrice);
+            }
+        
+            return typicalPrices;
+        }
+        
+        // ChatGPT에게 질문하는 메서드 (OpenAI API 사용)
+        public async Task<string> AskChatGPT(AnalysisInput analysisInput)
+        {
+            var keys = _security.LoadKeys();
+            if (keys.TryGetValue("OpenAIKey", out var apiKey))
+            {
+            }
+            else
+            {
+            }
+
+            var client = new OpenAiClient(apiKey);
+
+
+            // // ChatGPT에게 보낼 프롬프트 생성
+            // // 분석 입력 데이터를 JSON 문자열로 변환
+            // string inputData = JsonConvert.SerializeObject(analysisInput);
+            // string prompt = $"다음은 비트코인 가격 데이터입니다:\n{inputData}\n\n이 데이터를 기반으로 기술적 분석을 해주세요.";
+
+
+            // 가격 및 거래량 데이터를 Quote 형식으로 변환
+            var quotes = new List<Quote>();
+            for (int i = 0; i < analysisInput.PriceData.Close.Count; i++)
+            {
+                quotes.Add(new Quote
+                {
+                    Date = DateTime.Parse(analysisInput.PriceData.StartDate).AddDays(i),
+                    Open = analysisInput.PriceData.Open[i],
+                    High = analysisInput.PriceData.High[i],
+                    Low = analysisInput.PriceData.Low[i],
+                    Close = analysisInput.PriceData.Close[i],
+                    Volume = analysisInput.VolumeData.Volume[i]
+                });
+            }
+
+            // 이동평균선 계산
+            var sma20 = quotes.GetSma(20).ToList();
+            var sma50 = quotes.GetSma(50).ToList();
+            var sma200 = quotes.GetSma(200).ToList();
+
+            // RSI 계산
+            var rsi = quotes.GetRsi(14).ToList();
+
+            // MACD 계산
+            var macd = quotes.GetMacd(12, 26, 9).ToList();
+
+            // 볼린저 밴드 계산
+            var bb = quotes.GetBollingerBands(20, 2).ToList();
+
+            // 필요한 지표 값 추출 (최근 값)
+            var latestSma20 = sma20.LastOrDefault();
+            var latestRsi = rsi.LastOrDefault();
+            var latestMacd = macd.LastOrDefault();
+            var latestBb = bb.LastOrDefault();
+
+            // 프롬프트 구성
+            string prompt = $"비트코인에 대한 최신 기술적 지표는 다음과 같습니다:\n\n" +
+                            $"- 20일 이동평균선(SMA): {latestSma20?.Sma}\n" +
+                            $"- RSI(14): {latestRsi?.Rsi}\n" +
+                            $"- MACD: {latestMacd?.Macd}\n" +
+                            $"- MACD 시그널: {latestMacd?.Signal}\n" +
+                            $"- 볼린저 밴드 상한: {latestBb?.UpperBand}\n" +
+                            $"- 볼린저 밴드 중간: {latestBb?.Sma}\n" +
+                            $"- 볼린저 밴드 하한: {latestBb?.LowerBand}\n\n" +
+                             $"이러한 지표들을 기반으로 현재 비트코인 시장의 기술적 분석을 제공해 주세요. 각 지표의 의미와 시장에 대한 영향을 근거와 함께 설명해 주세요.";
+
+
+
+
+
+
+            return await client.GetChatCompletionAsync(prompt);
+
+
+            // // OpenAI API를 통해 ChatGPT에게 질문
+            // using (HttpClient client = new HttpClient())
+            // {
+            //     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+            // 
+            //     var requestContent = new
+            //     {
+            //         model = "gpt-3.5-turbo",
+            //         messages = new[]
+            //         {
+            //             new { role = "user", content = prompt }
+            //         },
+            //         max_tokens = 1000
+            //     };
+            // 
+            //     var httpContent = new StringContent(JsonConvert.SerializeObject(requestContent), System.Text.Encoding.UTF8, "application/json");
+            // 
+            //     HttpResponseMessage response = await client.PostAsync("https://api.openai.com/v1/chat/completions", httpContent);
+            //     string responseContent = await response.Content.ReadAsStringAsync();
+            // 
+            //     // 응답 파싱
+            //     var chatResponse = JsonConvert.DeserializeObject<ChatGPTResponse>(responseContent);
+            // 
+            //     if (chatResponse != null && chatResponse.Choices != null && chatResponse.Choices.Length > 0)
+            //     {
+            //         return chatResponse.Choices[0].Message.Content;
+            //     }
+            //     else
+            //     {
+            //         return "ChatGPT로부터 유효한 응답을 받지 못했습니다.";
+            //     }
+            // }
         }
     }
 }

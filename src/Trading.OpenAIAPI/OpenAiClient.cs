@@ -24,13 +24,16 @@ namespace Trading.OpenAiAPI
         /// <returns>AI의 응답 메시지</returns>
         public async Task<string> GetChatCompletionAsync(string prompt, string model = "gpt-4o-mini")
         {
+            OpenAIClientOptions option = new OpenAIClientOptions();
             ChatClient client = new ChatClient(model, _apiKey);
 
+            string systemPrompt = "You are the Bitcoin expert, and you can give me a buy, sell or hold answer based on the data I provide. response in json format\r\n\r\nResponse Example:\r\n{\"decision\":\"buy\", \"reason\":\"some technical reason\"}\r\n{\"decision\":\"sell\", \"reason\":\"some technical reason\"}\r\n{\"decision\":\"hold\", \"reason\":\"some technical reason\"}";
             ChatCompletion chatCompletion = client.CompleteChat(
             [
-                new UserChatMessage(prompt),
+                new UserChatMessage("system", systemPrompt),
+                new UserChatMessage("user", prompt),
             ]);
-            return "";
+            return chatCompletion.Content.FirstOrDefault().Text;
         }
     }
 }
